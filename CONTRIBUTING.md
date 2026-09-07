@@ -1,58 +1,45 @@
-# Contributing to AI Research Ideas
+# Contributing
 
-## What belongs here
+The contribution rule is intentionally simple.
 
-A contribution should begin with a **specific, original research idea**, not merely a broad topic.
-
-Good examples include a new hypothesis, mechanism, modeling formulation, experimental design, benchmark, or scientifically meaningful combination whose contribution is clearly distinguished from known public work.
-
-Not sufficient by itself: generic topics such as “use AI for batteries,” copied paper ideas with altered wording, or bulk AI-generated text with no identifiable original contribution.
-
-## Originality declaration
-
-Before submission, perform a reasonable public literature/prior-art search and complete the originality section of `metadata.yml`.
-
-You must provide: search date, sources/databases searched, queries/keywords used, closest public work found, specific differences, and `declaration: true`.
-
-The repository does not certify absolute novelty.
-
-## Submission path
+## New Idea
 
 Create:
 
 ```text
-submissions/<your-github-username>/<short-slug>/
+submissions/<your-github-username>/<any-short-name>/
 ```
 
-Do not create `ideas/000123_...` yourself. Official IDs and timestamps are assigned by the platform/maintainer.
+Put **at least one `.md` file** anywhere inside that folder, then open a Pull Request.
 
-## Required files
+That is the only required content rule.
 
-```text
-README.md
-metadata.yml
-```
+You may optionally add code, data, figures, PDFs, notebooks, documents, or other research materials.
 
-Recommended: `code/`, `data/`, `figures/`, `paper/`, `references/`.
+## Originality
 
-Do not commit secrets, credentials, confidential research, private datasets without authorization, or content you do not have permission to redistribute.
+Submit only ideas you genuinely believe are your own original research ideas and not already publicly disclosed in the academic literature. A literature-search form is not required, but contributors are expected to act in good faith.
 
-## AI-assisted execution
+## Official allocation
 
-AI may assist with literature searching/organization, programming, data work, simulation/experiments, analysis, plots/figures, research writing, documentation, and repository preparation.
+Do not manually create numbered folders under `ideas/` for a new Idea.
 
-The contributor remains responsible for validation. Fabricated citations, invented datasets represented as real, falsified experiments, or unsupported claims are prohibited.
+After the submission PR is merged, the platform allocates the next unused number, assigns the current fixed GMT+3 timestamp to the second, records the owner, and moves all submitted files into the official folder.
 
-## Ownership rule
+## Editing your Idea
 
-For an official idea, ownership is recorded in `metadata.yml`.
+Once your Idea is official, you can propose any changes inside your own folder, including adding, editing, renaming, or deleting files. The folder must contain at least one `.md` file unless you are deleting the entire Idea.
 
-A non-maintainer pull request may modify content only in its own submission path or an official idea whose recorded `owner.github` equals the pull-request actor. Core paths such as `.github/`, `scripts/`, `config/`, `registry/`, and root governance files are maintainer-controlled.
+## What you cannot change
 
-## Deleting an idea
+Ordinary contributors cannot modify:
 
-The recorded owner may submit a pull request deleting the entire official idea folder. Its ORI ID is never reused; the registry keeps a tombstone record.
+- another user's Idea;
+- another user's pending submission;
+- `.github/`;
+- `scripts/`;
+- `config/`;
+- `registry/`;
+- root governance/platform files.
 
-## Pull requests
-
-Use the repository PR template. Automated validation must pass before merge. By contributing, you confirm that you have the right to publish the submitted material under its declared licenses.
+These restrictions protect the shared repository while leaving contributors maximum control over their own Idea folders.

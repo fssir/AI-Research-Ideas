@@ -1,72 +1,109 @@
 #!/usr/bin/env python3
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
-import json, yaml
+import json
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
-IDEAS = ROOT / "ideas"
 REGISTRY = ROOT / "registry" / "ideas.json"
-INDEX = IDEAS / "README.md"
+INDEX = ROOT / "ideas" / "README.md"
 TZ = timezone(timedelta(hours=3))
 
-def esc(v):
-    return str(v or "").replace("|", "\\|").replace("\n", " ").strip()
+
+def md_files(folder):
+    return sorted([p for p in folder.rglob("*") if p.is_file() and p.suffix.lower() == ".md"], key=lambda p: str(p).lower())
+
+
+def clean(text):
+    text = re.sub(r"[`*_>#]", "", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def preview(folder):
+    files = md_files(folder)
+    if not files:
+        return "Untitled Idea", "No Markdown preview available", ""
+    md = files[0]
+    lines = md.read_text(encoding="utf-8", errors="replace").splitlines()
+    title = ""
+    for line in lines:
+        m = re.match(r"^\s*#\s+(.+?)\s*$", line)
+        if m:
+            title = clean(m.group(1))
+            break
+    if not title:
+        for line in lines:
+            if clean(line):
+                title = clean(line)[:120]
+                break
+    if not title:
+        title = md.stem
+    summary = ""
+    in_fence = False
+    for line in lines:
+        s = line.strip()
+        if s.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence or not s or s.startswith("#"):
+            continue
+        candidate = clean(s)
+        if candidate and candidate != title:
+            summary = candidate[:240]
+            break
+    return title, summary or title, str(md.relative_to(folder)).replace("\\", "/")
+
+
+def esc(value):
+    return str(value or "").replace("|", "\\|").replace("\n", " ").strip()
+
 
 def main():
     registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    records, active_paths = [], set()
-    for folder in sorted(IDEAS.iterdir()):
-        if not folder.is_dir():
-            continue
-        meta_path = folder / "metadata.yml"
-        if not meta_path.exists():
-            continue
-        meta = yaml.safe_load(meta_path.read_text(encoding="utf-8")) or {}
-        idea_id = meta.get("id")
-        if not idea_id:
-            continue
-        active_paths.add(folder.name)
-        owner = ((meta.get("owner") or {}).get("github")) or ""
-        record = {
-            "id": idea_id,
-            "title": meta.get("title", ""),
-            "summary": meta.get("summary", ""),
-            "fields": ", ".join(meta.get("fields") or []),
-            "owner": owner,
-            "created_at": meta.get("created_at", ""),
-            "status": meta.get("status", "active"),
-            "folder": folder.name,
-        }
-        records.append(record)
-        registry["ideas"].setdefault(idea_id, {})
-        registry["ideas"][idea_id].update({
-            "owner": owner,
-            "title": record["title"],
-            "created_at": record["created_at"],
-            "status": record["status"],
-            "path": f"ideas/{folder.name}",
-        })
     now = datetime.now(TZ).isoformat(timespec="seconds")
-    for idea_id, item in registry["ideas"].items():
-        path = item.get("path", "")
-        folder = Path(path).name if path else ""
-        if item.get("status") != "deleted" and folder and folder not in active_paths:
+    active = []
+
+    for idea_id, item in registry.get("ideas", {}).items():
+        path = item.get("path")
+        folder = ROOT / path if path else None
+        if item.get("status") != "deleted" and (not folder or not folder.exists()):
             item["status"] = "deleted"
             item["deleted_at"] = now
-    records.sort(key=lambda x: int(x["id"].split("-")[-1]), reverse=True)
+            continue
+        if item.get("status") == "deleted":
+            continue
+        title, summary, primary_md = preview(folder)
+        item["title"] = title
+        item["summary"] = summary
+        item["primary_md"] = primary_md
+        active.append((idea_id, item))
+
+    active.sort(key=lambda pair: int(pair[0].split("-")[-1]), reverse=True)
+
     lines = [
-        "# Research Idea Index", "",
-        "Search this page before opening folders. Each title links to the complete idea record.", "",
-        "| ID | Title | Summary | Field | Owner | Created (GMT+3) | Status |",
-        "|---|---|---|---|---|---|---|",
+        "# Research Idea Index",
+        "",
+        "This page shows a short preview before you open an Idea folder. Titles and summaries are extracted automatically from Markdown files.",
+        "",
+        "| ID | Title | Preview | Owner | Created (GMT+3) | Status |",
+        "|---|---|---|---|---|---|",
     ]
-    for r in records:
-        title = f"[{esc(r['title'])}]({r['folder']}/)"
-        lines.append(f"| {esc(r['id'])} | {title} | {esc(r['summary'])} | {esc(r['fields'])} | @{esc(r['owner'])} | {esc(r['created_at'])} | {esc(r['status'])} |")
-    if not records:
-        lines.append("| — | No official ideas allocated yet | — | — | — | — | — |")
+
+    for idea_id, item in active:
+        folder_name = Path(item["path"]).name
+        title_link = f"[{esc(item.get('title'))}]({folder_name}/)"
+        lines.append(
+            f"| {esc(idea_id)} | {title_link} | {esc(item.get('summary'))} | "
+            f"@{esc(item.get('owner'))} | {esc(item.get('created_at'))} | {esc(item.get('status'))} |"
+        )
+
+    if not active:
+        lines.append("| — | No official ideas yet | — | — | — | — |")
+
+    lines += ["", "Deleted Idea IDs remain reserved in `registry/ideas.json` and are never reused."]
     INDEX.write_text("\n".join(lines) + "\n", encoding="utf-8")
     REGISTRY.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
 
 if __name__ == "__main__":
     main()

@@ -1,76 +1,26 @@
-name: New research idea
-description: Propose an original human idea for AI-assisted research execution
+name: Discuss a research idea
+description: Optional discussion before submitting an Idea folder
 title: "[IDEA] "
 body:
   - type: markdown
     attributes:
       value: |
-        ORI requires an original core idea plus a documented reasonable search for public prior work. Submission does not constitute a platform guarantee of worldwide novelty.
+        This issue form is optional. To add an Idea to the official library, submit at least one Markdown file through a Pull Request under submissions/<your-github-username>/<short-name>/.
   - type: input
     id: idea_title
     attributes:
-      label: Research idea title
+      label: Idea title
     validations:
       required: true
   - type: textarea
-    id: question
+    id: idea
     attributes:
-      label: Research question
-    validations:
-      required: true
-  - type: textarea
-    id: original_idea
-    attributes:
-      label: Key original idea
-      description: State exactly what you believe is new.
+      label: Idea description
     validations:
       required: true
   - type: textarea
     id: prompt
     attributes:
-      label: Core prompt for AI
+      label: Optional prompt for AI
     validations:
-      required: true
-  - type: input
-    id: search_date
-    attributes:
-      label: Prior-art/literature search date
-      placeholder: YYYY-MM-DD
-    validations:
-      required: true
-  - type: textarea
-    id: sources
-    attributes:
-      label: Sources/databases searched
-    validations:
-      required: true
-  - type: textarea
-    id: queries
-    attributes:
-      label: Search queries
-    validations:
-      required: true
-  - type: textarea
-    id: closest
-    attributes:
-      label: Closest public work
-      description: Give titles/DOIs/arXiv IDs/URLs, or state NONE FOUND.
-    validations:
-      required: true
-  - type: textarea
-    id: difference
-    attributes:
-      label: Difference from closest known work
-    validations:
-      required: true
-  - type: checkboxes
-    id: declaration
-    attributes:
-      label: Declaration
-      options:
-        - label: I originated or have the right to submit this core idea.
-          required: true
-        - label: After the documented reasonable search, I am not aware of public academic work that already discloses the same core idea.
-          required: true
-        - label: I understand ORI does not certify absolute worldwide novelty.
-          required: true
+      required: false

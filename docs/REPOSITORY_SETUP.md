@@ -1,36 +1,50 @@
-# Repository setup checklist
+# Repository settings for the open model
 
-Repository: `fssir/AI-Research-Ideas`
+The repository is designed so ordinary users never need direct repository-level Write permission. They contribute through fork + Pull Request and have maximum control over their own Idea folders.
 
-Visibility: **Public**
+## Ruleset for main
 
-Suggested description:
+Recommended `Protect main` ruleset:
 
-> Open AI+Idea research library: humans contribute original research ideas and core prompts; AI assists literature, code, data, experiments, figures, results, manuscripts, and repository preparation.
+- Active
+- Target: default branch (`main`)
+- Require a Pull Request before merging
+- Required approving reviews: `0`
+- Do not require Code Owner review
+- Block force pushes / non-fast-forward updates
+- Restrict deletion of `main`
+- Bypass: Repository administrators
 
-Suggested topics:
+## Required status check
+
+After the `ori-validation` workflow has appeared at least once, edit the `Protect main` ruleset and enable **Require status checks to pass**, then add:
 
 ```text
-open-science
-research-ideas
-ai-for-science
-ai-assisted-research
-scientific-machine-learning
-research
-reproducible-research
-open-research
+ori-validation
 ```
 
-## Main branch protection
+This is the only required validation check needed for ordinary contributors.
 
-After the first `ori-validation` workflow has run successfully, configure a ruleset for `main`:
+## Auto-merge
 
-- require a pull request before merging;
-- require status checks before merging;
-- require `ori-validation`;
-- block force pushes;
-- block branch deletion;
-- require conversation resolution (recommended);
-- require Code Owner review for protected infrastructure (recommended).
+Go to:
 
-Unknown contributors should not receive direct write access. Public users should contribute via fork and pull request.
+```text
+Settings → General → Pull Requests
+```
+
+Enable **Allow auto-merge**.
+
+The platform maintenance workflow uses auto-merge for its generated allocation/index PR after `ori-validation` passes.
+
+## GitHub Actions permissions
+
+Go to:
+
+```text
+Settings → Actions → General → Workflow permissions
+```
+
+Select **Read and write permissions** and enable **Allow GitHub Actions to create and approve pull requests**.
+
+This allows the platform bot to create the follow-up PR that turns pending submissions into numbered official Idea folders.
