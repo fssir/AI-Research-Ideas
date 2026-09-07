@@ -1,6 +1,6 @@
 # Research Idea Index
 
-Search this page before opening folders. Each title will link to the complete idea record after allocation.
+Search this page before opening folders. Each title links to the complete idea record.
 
 | ID | Title | Summary | Field | Owner | Created (GMT+3) | Status |
 |---|---|---|---|---|---|---|
