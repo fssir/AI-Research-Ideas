@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use the ORI repository infrastructure, cite this repository. Individual ideas should be cited using their own metadata when available."
+title: "AI Research Ideas"
+type: software
+authors:
+  - family-names: "Zhang"
+    given-names: "Ruyi"
+repository-code: "https://github.com/fssir/AI-Research-Ideas"
+license: Apache-2.0

@@ -1,0 +1,13 @@
+# Core infrastructure and governance
+/.github/ @fssir
+/scripts/ @fssir
+/config/ @fssir
+/registry/ @fssir
+/README.md @fssir
+/README.zh-CN.md @fssir
+/CONTRIBUTING.md @fssir
+/NOVELTY_POLICY.md @fssir
+/AI_RESEARCH_POLICY.md @fssir
+/LICENSE.md @fssir
+/CODE_OF_CONDUCT.md @fssir
+/SECURITY.md @fssir
