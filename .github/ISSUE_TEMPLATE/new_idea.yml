@@ -1,26 +1,34 @@
-name: Discuss a research idea
-description: Optional discussion before submitting an Idea folder
-title: "[IDEA] "
+name: Submit a new Idea
+description: Add an original research Idea to the public library
+title: "[NEW IDEA] "
 body:
-  - type: markdown
-    attributes:
-      value: |
-        This issue form is optional. To add an Idea to the official library, submit at least one Markdown file through a Pull Request under submissions/<your-github-username>/<short-name>/.
   - type: input
     id: idea_title
     attributes:
       label: Idea title
+      description: Give your research Idea a short title.
     validations:
       required: true
   - type: textarea
-    id: idea
+    id: idea_description
     attributes:
       label: Idea description
+      description: Describe the key research Idea. This can be brief or detailed.
     validations:
       required: true
   - type: textarea
-    id: prompt
+    id: ai_prompt
     attributes:
       label: Optional prompt for AI
+      description: If you have a core prompt or instructions for AI, add them here.
     validations:
       required: false
+  - type: checkboxes
+    id: declaration
+    attributes:
+      label: Declaration
+      options:
+        - label: I genuinely believe this core Idea is my own original research Idea and is not already publicly disclosed in the academic literature.
+          required: true
+        - label: I have the right to publish the content I submit.
+          required: true

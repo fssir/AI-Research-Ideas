@@ -1,11 +1,10 @@
-## Type
+## Change type
 
-- [ ] New Idea under `submissions/<my-username>/<short-name>/`
-- [ ] Update/delete an official Idea that I own
+- [ ] Update my own Idea
+- [ ] Delete my own Idea
 - [ ] Platform/maintainer change
 
-## Contributor declaration
+## Confirmation
 
-- [ ] My new/remaining Idea folder contains at least one `.md` file, unless I am deleting the whole Idea.
-- [ ] I am only changing my own submission/Idea, or I am a platform maintainer.
-- [ ] If this is a new Idea, I genuinely believe the core idea is original and not already publicly disclosed in the academic literature.
+- [ ] I am only changing an Idea that I own, or I am a platform maintainer.
+- [ ] If the Idea remains active, its folder contains at least one `.md` file.

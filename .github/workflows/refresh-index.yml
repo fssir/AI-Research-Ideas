@@ -1,0 +1,45 @@
+name: Refresh Idea index
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "ideas/**"
+      - "!ideas/README.md"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ori-index-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python .github/ori/scripts/build_index.py
+      - id: changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then echo "changed=true" >> "$GITHUB_OUTPUT"; else echo "changed=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Create index maintenance PR
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="automation/index-${GITHUB_RUN_ID}"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "chore: refresh Idea index"
+          git push origin "$BRANCH"
+          PR_URL=$(gh pr create --base main --head "$BRANCH" --title "chore: refresh Idea index" --body "Automatically refreshes Idea titles/summaries and records deletions.")
+          gh pr merge --auto --squash "$PR_URL" || true
