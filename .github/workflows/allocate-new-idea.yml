@@ -1,0 +1,48 @@
+name: Allocate new Idea
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: ori-idea-allocation
+  cancel-in-progress: false
+
+jobs:
+  allocate:
+    if: startsWith(github.event.issue.title, '[NEW IDEA]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Allocate ID and create Idea folder
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: python .github/ori/scripts/allocate_issue.py
+      - name: Create allocation Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="automation/idea-${{ github.event.issue.number }}-${GITHUB_RUN_ID}"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "feat: allocate Idea from issue #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+          PR_URL=$(gh pr create --base main --head "$BRANCH" --title "feat: publish Idea from issue #${{ github.event.issue.number }}" --body "Automatically allocates the next permanent Idea ID, GMT+3 timestamp, owner, and index entry for issue #${{ github.event.issue.number }}.")
+          gh issue comment "${{ github.event.issue.number }}" --body "Your Idea allocation PR is $PR_URL. Once merged, the Idea will appear in the public ideas/ library."
+          gh pr merge --auto --squash "$PR_URL" || true

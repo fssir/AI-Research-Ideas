@@ -19,9 +19,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate ownership and minimum Markdown requirement
+      - name: Validate Idea ownership
         run: |
-          python scripts/validate_pr.py \
+          python .github/ori/scripts/validate_pr.py \
             --base "${{ github.event.pull_request.base.sha }}" \
             --head "${{ github.event.pull_request.head.sha }}" \
             --actor "${{ github.event.pull_request.user.login }}"
