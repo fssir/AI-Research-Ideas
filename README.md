@@ -1,87 +1,89 @@
 # AI Research Ideas
 
-**An open AI+Idea research library built around original human ideas.**
+An open research-idea library where **people provide the key original idea and prompt, and AI can assist with the rest of the research workflow**: literature search, coding, data organization, experiments, analysis, figures, results, manuscript drafting, and GitHub preparation.
 
-Humans contribute the **key research idea and core prompt**. AI may then assist with literature discovery and organization, coding, data preparation and analysis, experiments, result generation, figures, manuscript drafting, and repository preparation.
+## Minimum requirement
 
-> **Novelty policy:** submissions must be original to the contributor and, after a reasonable public literature/prior-art search, the contributor must not be aware of public academic work that already discloses the same core idea. ARI does **not** certify absolute worldwide novelty.
+A research idea can be very simple. **One Markdown (`.md`) file is enough.**
 
-## Research model
+For example:
 
-```text
-Human
-  └─ original key idea + core prompt
-        ↓
-AI-assisted research execution
-  ├─ literature search and organization
-  ├─ code generation and implementation
-  ├─ data preparation and analysis
-  ├─ experiments and evaluation
-  ├─ result generation
-  ├─ figures and visualization
-  ├─ manuscript drafting
-  └─ repository preparation
-        ↓
-Open research record
+```markdown
+# My research idea
+
+I think ...
+
+Key idea: ...
+
+Prompt for AI: ...
 ```
 
-AI output is not treated as verified evidence by default. Contributors remain responsible for checking citations, methods, data provenance, calculations, research ethics, licensing, and the accuracy of claims.
+You may also add code, data, images, PDFs, notebooks, or other research files, but none of them are required.
 
-## Browse ideas
+Contributors should submit ideas they genuinely believe are original and not already publicly disclosed in the academic literature. See [NOVELTY_POLICY.md](NOVELTY_POLICY.md).
 
-See **[ideas/README.md](ideas/README.md)** for the human-readable index. Each entry shows the title, summary, field, owner, creation time, and status before the reader opens the full folder.
+## How to submit
 
-Official folders use:
+1. Fork this repository.
+2. Create a temporary folder:
 
 ```text
-000001_YYYYMMDD_HHMMSS_GMTp3
+submissions/<your-github-username>/<any-short-name>/
+```
+
+3. Put at least one `.md` file inside it.
+4. Open a Pull Request to `main`.
+
+Example:
+
+```text
+submissions/alice/new-transformer-idea/idea.md
+```
+
+No `metadata.yml`, abstract form, keyword list, code, data, or literature-search form is required.
+
+## Official folder creation
+
+After a submission is merged, the platform assigns the next permanent number and a GMT+3 timestamp, then moves the complete submission into:
+
+```text
+ideas/000001_YYYYMMDD_HHMMSS_GMTp3/
 ```
 
 Example:
 
 ```text
-000001_20260907_093612_GMTp3
+ideas/000001_20260907_093612_GMTp3/
 ```
 
-Public IDs use `ORI-000001`. Timestamps are assigned by the platform at allocation time using fixed **GMT+3 (`+03:00`)**, recorded to the second. IDs are never reused.
+The number is never reused. The creation time is fixed to **GMT+3 (`+03:00`)** and recorded to the second.
 
-## Contribute
+The platform internally records the GitHub owner in `registry/ideas.json`; contributors do not need to create or edit metadata files.
 
-Public contributors do not need write access to the repository.
+## Ownership
 
-1. Fork this repository.
-2. Create `submissions/<your-github-username>/<short-slug>/`.
-3. Add at least `README.md` and `metadata.yml` using `templates/idea/`.
-4. Open a pull request.
-5. After review/validation, a maintainer/platform allocates the official ORI ID and GMT+3 timestamp.
+The owner of an Idea can later add, edit, rename, or delete files inside their own official Idea folder through Pull Requests. They may also delete their entire Idea folder.
 
-The recorded owner may later update or delete their own official idea by pull request. Non-owners may not modify another contributor's idea.
+Other ordinary users cannot modify that Idea. Core platform files such as `.github/`, `scripts/`, and `registry/` are maintainer-controlled.
 
-See **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+## Browse before opening folders
 
-## Required originality record
+See [ideas/README.md](ideas/README.md). The index automatically extracts a title and short preview from the first Markdown file in each active Idea, so readers can understand the approximate content before opening the folder.
 
-Every proposal must record:
+## Contribution model
 
-- originality declaration;
-- search date;
-- databases/sources searched;
-- actual search queries/keywords;
-- closest known public work;
-- explanation of the difference between that work and the submitted core idea.
+```text
+Any GitHub user
+      ↓
+Fork + Pull Request
+      ↓
+Only ownership/path validation
+      ↓
+Merge
+      ↓
+Automatic number + GMT+3 timestamp
+      ↓
+Official ideas/ folder
+```
 
-See **[NOVELTY_POLICY.md](NOVELTY_POLICY.md)**.
-
-## Repository integrity
-
-The intended model is **fork → pull request → automated validation → merge**. Core infrastructure is maintainer-controlled. Validation checks path ownership, metadata, official folder naming, originality declarations, owner identity, protected paths, and common unsafe binary extensions.
-
-## Licensing
-
-Unless an individual idea declares a compatible alternative:
-
-- code: Apache-2.0;
-- original research text/documentation/figures: CC BY 4.0;
-- third-party data/content: remains under its original license and must be identified.
-
-See **[LICENSE.md](LICENSE.md)**.
+The goal is low-friction participation: **one idea, one Markdown file, and everything else is optional.**
