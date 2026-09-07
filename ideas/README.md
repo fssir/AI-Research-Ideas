@@ -1,7 +1,7 @@
-# Research Idea Index
+# Research Ideas
 
-Search this page before opening folders. Each title links to the complete idea record.
+Newest Ideas are listed first. Search this page by title, field, keyword, or summary. **Click an Idea title to open its complete folder and browse all code, papers, data, figures, and other files.**
 
-| ID | Title | Summary | Field | Owner | Created (GMT+3) | Status |
-|---|---|---|---|---|---|---|
-| — | No official ideas allocated yet | — | — | — | — | — |
+| Idea | Field | Keywords | Summary |
+|---|---|---|---|
+| — | No Ideas published yet | — | — |

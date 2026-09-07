@@ -6,6 +6,8 @@ An open research-idea library where **people provide the key original idea and p
 
 All published Ideas are in **[ideas/](ideas/)**.
 
+The Idea index is automatically built from the Markdown files inside every Idea folder. It extracts a title, research field, keywords, and summary so Ideas can be found without knowing their numbered folder name. **Click an Idea title in the index to open its complete folder and browse all code, papers, data, figures, notebooks, and other files.**
+
 Each Idea receives a permanent sequential ID and a folder name such as:
 
 ```text
@@ -24,7 +26,7 @@ Only the Idea title and description are required. An AI prompt is optional. Afte
 
 After your Idea is published, you may add, edit, rename, or delete files inside your own Idea folder through a Pull Request. You may also delete your entire Idea. Other users cannot modify your Idea.
 
-Each active Idea must contain at least one Markdown (`.md`) file. Other files such as code, data, images, PDFs, notebooks, and documents are optional.
+Each active Idea must contain at least one Markdown (`.md`) file. Other files such as code, data, images, PDFs, notebooks, and documents are optional. When Markdown content changes, the searchable index is refreshed automatically.
 
 ## Originality
 
