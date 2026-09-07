@@ -1,10 +1,10 @@
-# AI Research Ideas (ORI)
+# AI Research Ideas (ARI)
 
 **An open AI+Idea research library built around original human ideas.**
 
 Humans contribute the **key research idea and core prompt**. AI may then assist with literature discovery and organization, coding, data preparation and analysis, experiments, result generation, figures, manuscript drafting, and repository preparation.
 
-> **Novelty policy:** submissions must be original to the contributor and, after a reasonable public literature/prior-art search, the contributor must not be aware of public academic work that already discloses the same core idea. ORI does **not** certify absolute worldwide novelty.
+> **Novelty policy:** submissions must be original to the contributor and, after a reasonable public literature/prior-art search, the contributor must not be aware of public academic work that already discloses the same core idea. ARI does **not** certify absolute worldwide novelty.
 
 ## Research model
 
