@@ -39,7 +39,7 @@ jobs:
           BRANCH="automation/index-${GITHUB_RUN_ID}"
           git checkout -b "$BRANCH"
           git add -A
-          git commit -m "chore: refresh Idea index"
+          git commit -m "chore: refresh searchable Idea index"
           git push origin "$BRANCH"
-          PR_URL=$(gh pr create --base main --head "$BRANCH" --title "chore: refresh Idea index" --body "Automatically refreshes Idea titles/summaries and records deletions.")
+          PR_URL=$(gh pr create --base main --head "$BRANCH" --title "chore: refresh searchable Idea index" --body "Automatically refreshes Idea titles, research fields, keywords, summaries, machine-readable search metadata, and deletion records from the Markdown content inside each Idea folder.")
           gh pr merge --auto --squash "$PR_URL" || true
