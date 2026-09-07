@@ -1,4 +1,4 @@
-# AI Research Ideas (ARI)
+# AI Research Ideas
 
 **An open AI+Idea research library built around original human ideas.**
 
