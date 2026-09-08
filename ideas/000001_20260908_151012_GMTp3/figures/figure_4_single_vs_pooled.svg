@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="500" viewBox="0 0 820 500">
+<style>
+text { font-family: Arial, Helvetica, sans-serif; fill:#1D2733; }
+.title { font-size:24px; font-weight:700; fill:#16324F; }
+.subtitle { font-size:13px; fill:#637282; }
+.label { font-size:12px; }
+.small { font-size:11px; fill:#637282; }
+.value { font-size:11px; font-weight:700; }
+.boxTitle { font-size:13px; font-weight:700; fill:#16324F; }
+</style>
+<rect width="100%" height="100%" fill="#F7FAFC"/>
+<text x="410.0" y="40" text-anchor="middle" class="title">Single-Constant versus Pooled Training</text>
+<text x="410.0" y="64" text-anchor="middle" class="subtitle">Future next-digit accuracy on the four source constants</text>
+<line x1="90" y1="244.9999999999999" x2="740" y2="244.9999999999999" stroke="#E79A3B" stroke-dasharray="7 6" stroke-width="2"/>
+<rect x="145" y="204.25963081862054" width="40" height="195.74036918137946" fill="#16324F"/>
+<text x="165" y="197.25963081862054" text-anchor="middle" class="value">10.26%</text>
+<rect x="195" y="245.20733012306135" width="40" height="154.79266987693865" fill="#2A7F9E"/>
+<text x="215" y="238.20733012306135" text-anchor="middle" class="value">10.00%</text>
+<text x="190" y="428" text-anchor="middle" class="label">pi</text>
+<rect x="295" y="260.2387640449448" width="40" height="139.7612359550552" fill="#16324F"/>
+<text x="315" y="253.2387640449448" text-anchor="middle" class="value">9.90%</text>
+<rect x="345" y="276.8251738897815" width="40" height="123.17482611021848" fill="#2A7F9E"/>
+<text x="365" y="269.8251738897815" text-anchor="middle" class="value">9.79%</text>
+<text x="340" y="428" text-anchor="middle" class="label">e</text>
+<rect x="445" y="234.58166131621255" width="40" height="165.41833868378745" fill="#16324F"/>
+<text x="465" y="227.58166131621255" text-anchor="middle" class="value">10.07%</text>
+<rect x="495" y="231.73087212413083" width="40" height="168.26912787586917" fill="#2A7F9E"/>
+<text x="515" y="224.73087212413083" text-anchor="middle" class="value">10.09%</text>
+<text x="490" y="428" text-anchor="middle" class="label">sqrt(2)</text>
+<rect x="595" y="275.0110353130022" width="40" height="124.9889646869978" fill="#16324F"/>
+<text x="615" y="268.0110353130022" text-anchor="middle" class="value">9.81%</text>
+<rect x="645" y="268.53196896736324" width="40" height="131.46803103263676" fill="#2A7F9E"/>
+<text x="665" y="261.53196896736324" text-anchor="middle" class="value">9.85%</text>
+<text x="640" y="428" text-anchor="middle" class="label">sqrt(3)</text>
+<rect x="250" y="90" width="16" height="16" fill="#16324F"/><text x="275" y="103" class="label">Single-constant</text>
+<rect x="410" y="90" width="16" height="16" fill="#2A7F9E"/><text x="435" y="103" class="label">Pooled four-constant</text>
+</svg>
