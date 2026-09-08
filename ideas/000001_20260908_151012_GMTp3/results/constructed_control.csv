@@ -1,0 +1,2 @@
+model,sequence,seed,accuracy,ce_nats,perplexity
+TinyTCN,Champernowne,101,0.5474518459069021,3.623987669355414,37.48675495384855

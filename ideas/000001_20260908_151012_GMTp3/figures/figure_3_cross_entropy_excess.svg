@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="500" viewBox="0 0 850 500">
+<style>
+text { font-family: Arial, Helvetica, sans-serif; fill:#1D2733; }
+.title { font-size:24px; font-weight:700; fill:#16324F; }
+.subtitle { font-size:13px; fill:#637282; }
+.label { font-size:12px; }
+.small { font-size:11px; fill:#637282; }
+.value { font-size:11px; font-weight:700; }
+.boxTitle { font-size:13px; font-weight:700; fill:#16324F; }
+</style>
+<rect width="100%" height="100%" fill="#F7FAFC"/>
+<text x="425.0" y="40" text-anchor="middle" class="title">Cross-Entropy Excess over Uniform Baseline</text>
+<text x="425.0" y="64" text-anchor="middle" class="subtitle">CE - ln(10); lower is better, zero equals the uniform ten-digit distribution</text>
+<line x1="100" y1="390" x2="750" y2="390" stroke="#1D2733" stroke-width="1.5"/>
+<rect x="166" y="157.40831702140656" width="44" height="232.59168297859344" fill="#16324F" opacity=".9"/>
+<text x="188" y="149.40831702140656" text-anchor="middle" class="value">3.58</text>
+<rect x="230" y="390" width="44" height="2.040328947348069" fill="#2A7F9E" opacity=".9"/>
+<text x="252" y="410.0403289473481" text-anchor="middle" class="value">-0.03</text>
+<text x="220" y="424" text-anchor="middle" class="label">Seen constants</text>
+<rect x="376" y="144.62767286634724" width="44" height="245.37232713365276" fill="#16324F" opacity=".9"/>
+<text x="398" y="136.62767286634724" text-anchor="middle" class="value">3.77</text>
+<rect x="440" y="387.24354476301033" width="44" height="2.756455236989641" fill="#2A7F9E" opacity=".9"/>
+<text x="462" y="379.24354476301033" text-anchor="middle" class="value">0.04</text>
+<text x="430" y="424" text-anchor="middle" class="label">Unseen constants</text>
+<rect x="586" y="171.674570432064" width="44" height="218.325429567936" fill="#16324F" opacity=".9"/>
+<text x="608" y="163.674570432064" text-anchor="middle" class="value">3.36</text>
+<rect x="650" y="390" width="44" height="3.911221407870702" fill="#2A7F9E" opacity=".9"/>
+<text x="672" y="411.9112214078707" text-anchor="middle" class="value">-0.06</text>
+<text x="640" y="424" text-anchor="middle" class="label">IID</text>
+<rect x="270" y="100" width="16" height="16" fill="#16324F"/><text x="294" y="113" class="label">TinyTCN</text>
+<rect x="400" y="100" width="16" height="16" fill="#2A7F9E"/><text x="424" y="113" class="label">n-gram</text>
+<text x="30" y="250" transform="rotate(-90 30 250)" text-anchor="middle" class="label">Millinats per digit</text>
+</svg>

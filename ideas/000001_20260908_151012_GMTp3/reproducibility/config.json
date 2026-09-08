@@ -1,0 +1,17 @@
+{
+  "n_digits": 48000,
+  "train_end": 24000,
+  "val_start": 26000,
+  "val_end": 29000,
+  "test_start": 34000,
+  "test_end": 44000,
+  "context": 32,
+  "batch_size": 256,
+  "steps": 260,
+  "seeds": [
+    11,
+    29,
+    47
+  ],
+  "device": "cpu"
+}

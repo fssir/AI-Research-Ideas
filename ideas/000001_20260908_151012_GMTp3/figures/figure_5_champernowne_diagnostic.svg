@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="500" viewBox="0 0 760 500">
+<style>
+text { font-family: Arial, Helvetica, sans-serif; fill:#1D2733; }
+.title { font-size:24px; font-weight:700; fill:#16324F; }
+.subtitle { font-size:13px; fill:#637282; }
+.label { font-size:12px; }
+.small { font-size:11px; fill:#637282; }
+.value { font-size:11px; font-weight:700; }
+.boxTitle { font-size:13px; font-weight:700; fill:#16324F; }
+</style>
+<rect width="100%" height="100%" fill="#F7FAFC"/>
+<text x="380.0" y="40" text-anchor="middle" class="title">Champernowne Structured Nonperiodic Diagnostic</text>
+<text x="380.0" y="64" text-anchor="middle" class="subtitle">The same TinyTCN can exploit strong digit structure when it is present</text>
+<rect x="70" y="356.66666666666663" width="80" height="53.33333333333337" fill="#637282"/>
+<text x="110" y="347.66666666666663" text-anchor="middle" class="value">10.0%</text>
+<text x="110" y="440" text-anchor="middle" class="label">Chance</text>
+<rect x="230" y="316.4" width="80" height="93.60000000000002" fill="#6BB7C9"/>
+<text x="270" y="307.4" text-anchor="middle" class="value">17.5%</text>
+<text x="270" y="440" text-anchor="middle" class="label">Majority digit</text>
+<rect x="390" y="251.4832599706549" width="80" height="158.5167400293451" fill="#2A7F9E"/>
+<text x="430" y="242.4832599706549" text-anchor="middle" class="value">29.7%</text>
+<text x="430" y="440" text-anchor="middle" class="label">4-gram</text>
+<rect x="550" y="118.02568218298552" width="80" height="291.9743178170145" fill="#E79A3B"/>
+<text x="590" y="109.02568218298552" text-anchor="middle" class="value">54.7%</text>
+<text x="590" y="440" text-anchor="middle" class="label">TinyTCN</text>
+<text x="28" y="255" transform="rotate(-90 28 255)" text-anchor="middle" class="label">Future next-digit accuracy</text>
+</svg>
