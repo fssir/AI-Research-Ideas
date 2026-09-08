@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this research idea or its accompanying experimental package, please cite this repository entry."
+title: "Cross-Constant Transfer in Next-Digit Prediction of Irrational Decimal Expansions"
+type: software
+authors:
+  - family-names: "Zhang"
+    given-names: "Ruyi"
+repository-code: "https://github.com/fssir/AI-Research-Ideas/tree/main/ideas/000001_20260908_151012_GMTp3"
+date-released: 2026-09-08
+license: "See repository license"
