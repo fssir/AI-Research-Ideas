@@ -1,0 +1,7 @@
+numpy
+pandas
+mpmath
+torch
+matplotlib
+scipy
+python-docx
