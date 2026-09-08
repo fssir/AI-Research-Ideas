@@ -4,4 +4,4 @@ Newest Ideas are listed first. Search this page by title, field, keyword, or sum
 
 | Idea | Field | Keywords | Summary |
 |---|---|---|---|
-| — | No Ideas published yet | — | — |
+| [ORI-000001 · Cross-Constant Transfer in Next-Digit Prediction of Irrational Decimal Expansions](000001_20260908_151012_GMTp3/) | Mathematics / Statistics | irrational, mathematical, next-digit, prediction, decimal, expansions, and, statistical | Cross-Constant Transfer in Next-Digit Prediction of Irrational Decimal Expansions Idea Train a lightweight causal sequence model jointly on the decimal expansions of several irrational mathematical constants—initially pi, e, sqrt(2), and sqrt(3)—and test whether any learned…  —  @fssir · 2026-09-08T15:10:12+03:00 |
