@@ -13,20 +13,24 @@
       "path": "ideas/000001_20260908_151012_GMTp3",
       "source_issue": 4,
       "fields": [
-        "Mathematics / Statistics"
+        "Mathematics / Statistics",
+        "Biology / Medicine"
       ],
       "keywords": [
-        "irrational",
-        "mathematical",
-        "next-digit",
-        "prediction",
-        "decimal",
-        "expansions",
+        "the",
+        "gene",
         "and",
-        "statistical"
+        "irrational",
+        "next-digit",
+        "decimal",
+        "prediction",
+        "constants"
       ],
       "markdown_files": [
-        "README.md"
+        "README.md",
+        "paper/manuscript.md",
+        "reproducibility/AI_ASSISTANCE.md",
+        "reproducibility/RUN.md"
       ]
     }
   }
