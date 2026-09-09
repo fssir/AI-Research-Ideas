@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1320" viewBox="0 0 1000 1320">
+  <defs>
+    <style>
+      .title { font: 700 34px Georgia, 'Times New Roman', serif; fill:#0d274f; }
+      .subtitle { font: 600 18px Georgia, 'Times New Roman', serif; fill:#193a66; }
+      .section { font: 700 25px Arial, Helvetica, sans-serif; fill:#0c2b52; }
+      .boxTitle { font: 700 18px Arial, Helvetica, sans-serif; fill:#14243b; }
+      .body { font: 16px Arial, Helvetica, sans-serif; fill:#172133; }
+      .small { font: 14px Arial, Helvetica, sans-serif; fill:#172133; }
+      .tiny { font: 13px Arial, Helvetica, sans-serif; fill:#172133; }
+      .findingTitle { font: 700 15px Arial, Helvetica, sans-serif; fill:#102f57; }
+      .findingBody { font: 13px Arial, Helvetica, sans-serif; fill:#172133; }
+      .arrow { stroke:#0b4c85; stroke-width:4; fill:none; marker-end:url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0b4c85"/>
+    </marker>
+    <linearGradient id="head" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#eaf6ff"/><stop offset="1" stop-color="#d9efff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="1320" fill="#ffffff"/>
+  <rect x="16" y="14" width="968" height="110" rx="16" fill="url(#head)" stroke="#3aa0dc" stroke-width="2"/>
+  <text x="500" y="55" text-anchor="middle" class="title">Technical Roadmap of the Study</text>
+  <text x="500" y="84" text-anchor="middle" class="subtitle">Cross-Constant Transfer in Next-Digit Prediction of Irrational Decimal Expansions</text>
+  <text x="500" y="108" text-anchor="middle" class="subtitle">(English Version)</text>
+
+  <!-- 1 Data Preparation -->
+  <rect x="16" y="142" width="968" height="252" rx="14" fill="#edf8ff" stroke="#2ba4e5" stroke-width="2"/>
+  <text x="38" y="178" class="section">1. Data Preparation</text>
+
+  <rect x="34" y="196" width="290" height="170" rx="12" fill="#ffffff" stroke="#67b9e9" stroke-width="1.6"/>
+  <text x="179" y="224" text-anchor="middle" class="boxTitle">Select constants</text>
+  <line x1="52" y1="236" x2="306" y2="236" stroke="#a7d8f2"/>
+  <text x="50" y="254" class="small"><tspan x="50" dy="0">Training sources:</tspan><tspan x="68" dy="18">π, e, √2, √3</tspan><tspan x="50" dy="22">Unseen transfer set:</tspan><tspan x="68" dy="18">√5, ∛2, φ, ln 2, ln 3, ζ(3)</tspan><tspan x="50" dy="22">Control: IID uniform digits</tspan><tspan x="50" dy="18">Diagnostic: Champernowne's decimal</tspan></text>
+
+  <rect x="355" y="196" width="290" height="170" rx="12" fill="#ffffff" stroke="#67b9e9" stroke-width="1.6"/>
+  <text x="500" y="224" text-anchor="middle" class="boxTitle">Generate digits</text>
+  <line x1="373" y1="236" x2="627" y2="236" stroke="#a7d8f2"/>
+  <text x="375" y="262" class="body"><tspan x="375" dy="0">Generate 48,000 digits after</tspan><tspan x="375" dy="21">the decimal point using high-</tspan><tspan x="375" dy="21">precision mpmath; verify known</tspan><tspan x="375" dy="21">leading prefixes.</tspan><tspan x="375" dy="26">Apéry's constant ζ(3) is</tspan><tspan x="375" dy="21">irrational.</tspan></text>
+
+  <rect x="676" y="196" width="290" height="170" rx="12" fill="#ffffff" stroke="#67b9e9" stroke-width="1.6"/>
+  <text x="821" y="224" text-anchor="middle" class="boxTitle">Chronological split</text>
+  <line x1="694" y1="236" x2="948" y2="236" stroke="#a7d8f2"/>
+  <text x="697" y="262" class="body"><tspan x="697" dy="0">Training:   [0, 24,000)</tspan><tspan x="697" dy="25">Validation: [26,000, 29,000)</tspan><tspan x="697" dy="25">Test:       [34,000, 44,000)</tspan><tspan x="697" dy="31">Unused guard intervals reduce</tspan><tspan x="697" dy="21">sliding-window overlap.</tspan></text>
+  <path d="M324 281 H350" class="arrow"/>
+  <path d="M645 281 H671" class="arrow"/>
+  <path d="M500 394 V418" class="arrow"/>
+
+  <!-- 2 Model Architecture -->
+  <rect x="16" y="426" width="968" height="218" rx="14" fill="#effbf1" stroke="#4cad5c" stroke-width="2"/>
+  <text x="38" y="462" class="section">2. Model Architecture</text>
+
+  <rect x="34" y="482" width="275" height="130" rx="12" fill="#ffffff" stroke="#7fc98b" stroke-width="1.6"/>
+  <text x="171" y="510" text-anchor="middle" class="boxTitle">Input</text>
+  <line x1="52" y1="522" x2="291" y2="522" stroke="#b6dfbd"/>
+  <text x="55" y="549" class="body"><tspan x="55" dy="0">Most recent 32 digits</tspan><tspan x="55" dy="22">mapped to 12-dimensional</tspan><tspan x="55" dy="22">embeddings</tspan></text>
+
+  <rect x="348" y="482" width="304" height="130" rx="12" fill="#ffffff" stroke="#7fc98b" stroke-width="1.6"/>
+  <text x="500" y="508" text-anchor="middle" class="boxTitle">TinyTCN (3,442 parameters)</text>
+  <line x1="366" y1="522" x2="634" y2="522" stroke="#b6dfbd"/>
+  <text x="372" y="548" class="body"><tspan x="372" dy="0">• 4 causal convolutional blocks</tspan><tspan x="372" dy="21">• 16 channels, kernel size 3</tspan><tspan x="372" dy="21">• Dilation factors 1, 2, 4, 8</tspan><tspan x="372" dy="21">• Residual connections</tspan></text>
+
+  <rect x="691" y="482" width="275" height="130" rx="12" fill="#ffffff" stroke="#7fc98b" stroke-width="1.6"/>
+  <text x="828" y="510" text-anchor="middle" class="boxTitle">Output</text>
+  <line x1="709" y1="522" x2="948" y2="522" stroke="#b6dfbd"/>
+  <text x="715" y="549" class="body"><tspan x="715" dy="0">Linear layer → 10 logits</tspan><tspan x="715" dy="22">Next-digit prediction</tspan><tspan x="715" dy="22">for digits 0–9</tspan></text>
+  <path d="M309 547 H343" class="arrow"/>
+  <path d="M652 547 H686" class="arrow"/>
+  <path d="M500 644 V670" class="arrow"/>
+
+  <!-- 3 Training -->
+  <rect x="16" y="678" width="968" height="220" rx="14" fill="#fff7ed" stroke="#e58a2d" stroke-width="2"/>
+  <text x="38" y="714" class="section">3. Training</text>
+
+  <rect x="34" y="734" width="290" height="138" rx="12" fill="#ffffff" stroke="#edb06d" stroke-width="1.6"/>
+  <text x="179" y="762" text-anchor="middle" class="boxTitle">Training strategy</text>
+  <line x1="52" y1="774" x2="306" y2="774" stroke="#f2d1ab"/>
+  <text x="52" y="797" class="tiny"><tspan x="52" dy="0">• Pooled training on π, e, √2, √3</tspan><tspan x="52" dy="18">• Chronological next-digit prediction</tspan><tspan x="52" dy="18">• Context length: 32 digits</tspan><tspan x="52" dy="18">• Validation selects best n-gram order</tspan><tspan x="70" dy="17">among 0–3</tspan></text>
+
+  <rect x="355" y="734" width="290" height="138" rx="12" fill="#ffffff" stroke="#edb06d" stroke-width="1.6"/>
+  <text x="500" y="762" text-anchor="middle" class="boxTitle">Baselines</text>
+  <line x1="373" y1="774" x2="627" y2="774" stroke="#f2d1ab"/>
+  <text x="375" y="801" class="small"><tspan x="375" dy="0">• Order-0 to order-3 n-gram models</tspan><tspan x="375" dy="22">• IID uniform random digits</tspan><tspan x="393" dy="20">10% accuracy; CE = ln(10)</tspan></text>
+
+  <rect x="676" y="734" width="290" height="138" rx="12" fill="#ffffff" stroke="#edb06d" stroke-width="1.6"/>
+  <text x="821" y="762" text-anchor="middle" class="boxTitle">Variants</text>
+  <line x1="694" y1="774" x2="948" y2="774" stroke="#f2d1ab"/>
+  <text x="697" y="801" class="small"><tspan x="697" dy="0">• Separate TinyTCN for each source</tspan><tspan x="697" dy="22">• Pooled TinyTCN for cross-constant</tspan><tspan x="715" dy="20">zero-shot transfer</tspan></text>
+  <path d="M324 803 H350" class="arrow"/>
+  <path d="M645 803 H671" class="arrow"/>
+  <path d="M500 898 V924" class="arrow"/>
+
+  <!-- 4 Evaluation -->
+  <rect x="16" y="932" width="968" height="220" rx="14" fill="#f4f2ff" stroke="#7568d7" stroke-width="2"/>
+  <text x="38" y="968" class="section">4. Evaluation</text>
+
+  <rect x="34" y="988" width="310" height="138" rx="12" fill="#ffffff" stroke="#9a90df" stroke-width="1.6"/>
+  <text x="189" y="1016" text-anchor="middle" class="boxTitle">Test sets</text>
+  <line x1="52" y1="1028" x2="326" y2="1028" stroke="#cbc5ee"/>
+  <text x="52" y="1053" class="small"><tspan x="52" dy="0">• Held-out future digits of source constants</tspan><tspan x="52" dy="20">• Six completely unseen constants (zero-shot)</tspan><tspan x="52" dy="20">• IID uniform-digit control</tspan><tspan x="52" dy="20">• Champernowne diagnostic positive control</tspan></text>
+
+  <rect x="365" y="988" width="255" height="138" rx="12" fill="#ffffff" stroke="#9a90df" stroke-width="1.6"/>
+  <text x="492" y="1016" text-anchor="middle" class="boxTitle">Metrics</text>
+  <line x1="383" y1="1028" x2="602" y2="1028" stroke="#cbc5ee"/>
+  <text x="387" y="1053" class="body"><tspan x="387" dy="0">• Next-digit accuracy</tspan><tspan x="387" dy="24">• Cross entropy (nats/digit)</tspan><tspan x="387" dy="24">• Perplexity</tspan></text>
+
+  <rect x="641" y="988" width="325" height="138" rx="12" fill="#ffffff" stroke="#9a90df" stroke-width="1.6"/>
+  <text x="803" y="1016" text-anchor="middle" class="boxTitle">Analysis</text>
+  <line x1="659" y1="1028" x2="948" y2="1028" stroke="#cbc5ee"/>
+  <text x="661" y="1053" class="small"><tspan x="661" dy="0">• Compare seen vs. unseen performance</tspan><tspan x="661" dy="20">• Compare with the uniform baseline</tspan><tspan x="661" dy="20">• Test cross-constant transfer</tspan><tspan x="661" dy="20">• Assess the effect of pooled training</tspan></text>
+  <path d="M344 1057 H360" class="arrow"/>
+  <path d="M620 1057 H636" class="arrow"/>
+  <path d="M500 1152 V1175" class="arrow"/>
+
+  <!-- 5 Findings -->
+  <rect x="16" y="1183" width="968" height="119" rx="14" fill="#eef9ff" stroke="#36a6df" stroke-width="2"/>
+  <text x="38" y="1216" class="section">5. Main Findings</text>
+
+  <rect x="32" y="1231" width="225" height="57" rx="9" fill="#ffffff" stroke="#7bc5ea"/>
+  <text x="144" y="1250" text-anchor="middle" class="findingTitle">No transferable structure</text>
+  <text x="144" y="1268" text-anchor="middle" class="findingBody">9.93% seen; 9.99% unseen; 10.10% IID</text>
+  <text x="144" y="1284" text-anchor="middle" class="findingBody">No stable transfer advantage.</text>
+
+  <rect x="267" y="1231" width="225" height="57" rx="9" fill="#ffffff" stroke="#7bc5ea"/>
+  <text x="379" y="1250" text-anchor="middle" class="findingTitle">Worse than uniform baseline</text>
+  <text x="379" y="1268" text-anchor="middle" class="findingBody">Cross entropy &gt; ln(10); order-0</text>
+  <text x="379" y="1284" text-anchor="middle" class="findingBody">n-gram selected on validation.</text>
+
+  <rect x="502" y="1231" width="225" height="57" rx="9" fill="#ffffff" stroke="#7bc5ea"/>
+  <text x="614" y="1250" text-anchor="middle" class="findingTitle">Pooled training does not help</text>
+  <text x="614" y="1268" text-anchor="middle" class="findingBody">No consistent accuracy or</text>
+  <text x="614" y="1284" text-anchor="middle" class="findingBody">cross-entropy improvement.</text>
+
+  <rect x="737" y="1231" width="229" height="57" rx="9" fill="#ffffff" stroke="#7bc5ea"/>
+  <text x="851" y="1250" text-anchor="middle" class="findingTitle">Positive control works</text>
+  <text x="851" y="1268" text-anchor="middle" class="findingBody">Champernowne: 54.7%</text>
+  <text x="851" y="1284" text-anchor="middle" class="findingBody">next-digit accuracy.</text>
+</svg>
