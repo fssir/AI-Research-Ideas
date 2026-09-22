@@ -1,0 +1,39 @@
+name: ORI platform
+on:
+  issues:
+    types: [opened, edited, reopened]
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: [ORI contribution checks]
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  checks: write
+concurrency:
+  group: ori-platform-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'fssir/AI-Research-Ideas'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Test trusted platform code
+        run: python3 .github/ori/tests/test_platform.py
+      - name: Validate, publish and index without executing submitted content
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/ori/scripts/publisher.py
+# No pull_request_target, fork checkout, untrusted artifacts, pip install,
+# paid AI API, admin token or branch-protection bypass is used here.
+# The hourly full scan recovers missed/coalesced events and pending merges.

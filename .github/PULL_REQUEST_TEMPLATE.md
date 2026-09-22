@@ -1,10 +1,7 @@
-## Change type
+## Change
 
-- [ ] Update my own Idea
-- [ ] Delete my own Idea
-- [ ] Platform/maintainer change
+Describe the addition, edit or deletion. Keep at least one nonempty `.md` file unless deleting the whole Idea.
 
-## Confirmation
+- [ ] I dedicate my original contribution under CC0-1.0 and have the right to submit it.
 
-- [ ] I am only changing an Idea that I own, or I am a platform maintainer.
-- [ ] If the Idea remains active, its folder contains at least one `.md` file.
+Third-party material retains its own license/notices. No claim of completed experiments should be made unless they were actually run.

@@ -1,26 +1,30 @@
 name: Submit a new Idea
-description: Add an original research Idea to the public library
+description: Share an original idea; one Markdown page is enough.
 title: "[NEW IDEA] "
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe your idea in any language. Code, data, figures and papers are optional.
+        Original contributions use CC0-1.0: reuse, modification and commercial use without required attribution.
+        Submit only material you can release. Do not upload third-party papers, secrets or confidential data without permission.
   - type: input
     id: idea_title
     attributes:
       label: Idea title
-      description: Give your research Idea a short title.
     validations:
       required: true
   - type: textarea
     id: idea_description
     attributes:
       label: Idea description
-      description: Describe the key research Idea. This can be brief or detailed.
+      description: The key question and idea; no mandatory metadata form.
     validations:
       required: true
   - type: textarea
     id: ai_prompt
     attributes:
       label: Optional prompt for AI
-      description: If you have a core prompt or instructions for AI, add them here.
     validations:
       required: false
   - type: checkboxes
@@ -28,7 +32,7 @@ body:
     attributes:
       label: Declaration
       options:
-        - label: I genuinely believe this core Idea is my own original research Idea and is not already publicly disclosed in the academic literature.
+        - label: I dedicate my original contribution under CC0-1.0 and have the right to submit it.
           required: true
-        - label: I have the right to publish the content I submit.
+        - label: I genuinely believe the core idea is original and have not knowingly copied an existing academic work.
           required: true
