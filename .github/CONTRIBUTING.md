@@ -1,30 +1,33 @@
 # Contributing
 
-## Submit a new Idea
+## New idea
 
-Use **Issues → New issue → Submit a new Idea**.
+Use **Issues → New issue → Submit a new Idea**. Supply a title, a description and consent to CC0. An AI prompt is optional. A single Markdown file is enough; there is no required `metadata.yml`, keyword form or literature-search questionnaire.
 
-You only need to provide:
+The publisher creates `ideas/000001_YYYYMMDD_HHMMSS_GMTp3/README.md`, records the submitting GitHub account and its stable numeric ID, and updates the catalog. Number and timestamp become permanent when the publication PR merges. Do not allocate numbers manually. Creation times use a fixed `+03:00` offset, not a daylight-saving region.
 
-- an Idea title;
-- an Idea description.
+## Upload a complete research folder
 
-An AI prompt is optional.
+After your numbered folder is published, fork the repository, copy your local files **inside your own numbered folder**, commit/push and open a PR. GitHub Desktop or Git is useful for many files; GitHub's **Add file → Upload files** is sufficient for smaller uploads. The repository owner can use the same workflow. Never add an extra `ideas/` layer inside the numbered folder.
 
-The platform assigns the next unused sequential ID and the current fixed GMT+3 timestamp, then creates the official folder under `ideas/`.
+Any regular files may accompany an Idea. Suggested (not mandatory) subfolders are `code/`, `paper/`, `data/`, `results/`, `figures/`, and `reproducibility/`. The catalog links directly to folders that actually exist.
 
-## Edit an existing Idea
+## Edit or delete
 
-The recorded owner may propose any change inside their own official Idea folder through a Pull Request, including adding, editing, renaming, or deleting files.
+Propose changes to your own Idea via PR and tick the CC0 checkbox for original additions. The trusted publisher checks the authenticated PR author's numeric GitHub ID against the registry on `main`, not against ownership claims in your PR. You may rename files or remove the entire Idea. An active Idea must retain nonempty UTF-8 Markdown. A deleted published ID is never reused.
 
-An active Idea must contain at least one `.md` file. Deleting the entire Idea is allowed.
+Public deletion removes the active entry; it does not erase Git history, earlier clones, or the effect of CC0. Existing provenance/author records are retained for administration, not as a reuse-attribution requirement.
 
-Ordinary users cannot modify another user's Idea or platform infrastructure.
+## Openness and safety
 
-## Originality
+Anyone may reuse CC0-covered work without permission or attribution, including commercially and in closed-source products. This does **not** grant strangers direct write access to the maintained upstream repository. You cannot edit another author's folder or platform code automatically. Maintainer infrastructure PRs are reviewed/merged manually, never auto-merged by the publisher.
 
-Submit only Ideas you genuinely believe are your own original research ideas and not already publicly disclosed in the academic literature. No formal literature-search form is required.
+Do not include secrets, private/confidential material or third-party works you cannot redistribute. Keep third-party licenses and notices; merely uploading something does not put it under CC0. Originality is a good-faith contributor obligation, not an automated novelty certificate. Respect applicable law and research ethics.
 
-## Safety
+## Operational limits
 
-Do not upload secrets, credentials, malware, unauthorized confidential data, or material you do not have the right to publish.
+Automation accepts at most 1000 changed paths / 100 MiB per PR and 50 MiB per regular file. Symlinks, submodules and unsafe paths are rejected. Each Markdown file must be at most 2 MiB and an Idea's Markdown at most 32 MiB; oversize content produces an explicit error rather than a silently incomplete index. Split long documents or link large datasets to a suitable data repository. These are hosting/safety limits, not restrictions on downstream CC0 reuse.
+
+## When a submission is pending
+
+The normal path uses one machine-owned publication branch/PR, not a new index PR on every change. Check the source Issue comment and PR's `ori-validation` check. After editing consent or content, the next event/periodic scan retries. GitHub scheduling is best effort and publication is not guaranteed to be instantaneous. Maintainers can run **Actions → ORI platform → Run workflow**.

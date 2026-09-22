@@ -1,5 +1,6 @@
+# Requests maintainer attention; this file alone is not a directory ACL.
 /.github/ @fssir
 /README.md @fssir
-/LICENSE.md @fssir
+/LICENSE @fssir
 /CITATION.cff @fssir
 /ideas/README.md @fssir
