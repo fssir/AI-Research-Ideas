@@ -44,7 +44,7 @@ These findings do **not** prove randomness, normality, or theoretical unpredicta
 
 ### Code
 
-- [`code/experiment_full.py`](code/experiment_full.py) — complete low-compute reference experiment.
+- [`code/experiment_full.py`](code/experiment_full.py) — core low-compute reference experiment. See the [reproduction guide](reproducibility/RUN.md) for which archived outputs this script does and does not regenerate.
 - [`code/requirements.txt`](code/requirements.txt) — Python dependencies.
 
 ### Results
@@ -66,6 +66,7 @@ These findings do **not** prove randomness, normality, or theoretical unpredicta
 - [`figures/figure_3_cross_entropy_excess.svg`](figures/figure_3_cross_entropy_excess.svg)
 - [`figures/figure_4_single_vs_pooled.svg`](figures/figure_4_single_vs_pooled.svg)
 - [`figures/figure_5_champernowne_diagnostic.svg`](figures/figure_5_champernowne_diagnostic.svg)
+- [`figures/figure_6_technical_roadmap_english.svg`](figures/figure_6_technical_roadmap_english.svg) — English technical roadmap.
 
 ### Reproducibility
 
