@@ -13,7 +13,7 @@ import urllib.request
 from datetime import datetime
 from urllib.parse import quote
 
-from catalog import (CONSENT, Entry, Snapshot, REGISTRY, INDEX, HUMAN, TZ, allocate,
+from catalog import (CONSENT, Entry, Snapshot, REGISTRY, INDEX, HUMAN, MAX_INDEX, TZ, allocate,
                      authorize, blob_sha, consented, dump, render_catalog, safe_path, validate_registry)
 
 BRANCH = 'automation/ori-platform'
@@ -90,7 +90,7 @@ class API:
 
     def comment(self, number: int, message: str):
         body = MARKER + '\n' + message
-        existing = [c for c in self.pages(f'/issues/{number}/comments') if c['user']['id'] == BOT_ID and c.get('body', '').startswith(MARKER)]
+        existing = [c for c in self.pages(f'/issues/{number}/comments') if c['user']['id'] == BOT_ID and (c.get('body') or '').startswith(MARKER)]
         if existing:
             if existing[-1]['body'] != body:
                 self.request('/issues/comments/' + str(existing[-1]['id']), 'PATCH', {'body': body})
@@ -101,8 +101,11 @@ class API:
         number, head = pr['number'], pr['head']['sha']
         for _ in range(4):
             live = self.request(f'/pulls/{number}')
-            if live['state'] != 'open' or live['head']['sha'] != head:
-                print(f'PR #{number} changed; not merged')
+            if (live['state'] != 'open' or live['head']['sha'] != head
+                    or live.get('draft') or live.get('base', {}).get('ref') != 'main'
+                    or ('body' in pr and live.get('body') != pr.get('body'))
+                    or ('user' in pr and live.get('user', {}).get('id') != pr['user']['id'])):
+                print(f'PR #{number} changed state/base/consent; not merged')
                 return False
             if self.request('/git/ref/heads/main')['object']['sha'] != base_sha:
                 print(f'Base advanced before PR #{number} merge; revalidation required')
@@ -130,27 +133,61 @@ def process_contributions(api: API, prs: list[dict]) -> None:
     for short in prs:
         if short.get('draft') or is_our_pr(short, api.repo) or short['user']['id'] == BOT_ID:
             continue
-        pr = api.request(f'/pulls/{short["number"]}')
+        try:
+            pr = api.request(f'/pulls/{short["number"]}')
+        except ApiError as exc:
+            if exc.status == 404:
+                continue  # Deleted/transferred between listing and fetch.
+            raise
+        if pr.get('state') != 'open' or pr.get('draft') or pr.get('base', {}).get('ref') != 'main':
+            continue
+        # Errors in trusted main must stop the workflow; never trust a PR to repair it.
         base_sha, current = api.main()
-        head = api.snapshot(pr['head']['sha'])
-        comparison = api.request('/compare/' + base_sha + '...' + pr['head']['sha'])
-        ancestor = api.snapshot(comparison['merge_base_commit']['sha'])
         reg = json.loads(current.read(REGISTRY)); validate_registry(reg)
         config = json.loads(current.read('.github/ori/config/maintainers.json'))
         maintainer = pr['user']['id'] in {u['id'] for u in config['maintainers']}
-        changed = {p for p in set(ancestor.entries) | set(head.entries) if ancestor.entries.get(p) != head.entries.get(p)}
-        core_change = any(not p.startswith('ideas/') or p == HUMAN for p in changed)
-        if maintainer and core_change:
-            # Maintainers can change platform code, but the robot never auto-merges it.
-            api.check(pr['head']['sha'], True, 'Trusted maintainer platform change. Manual maintainer review/merge required; this check does not execute candidate code or certify tests.')
-            continue
         try:
-            authorize(current, ancestor, head, reg, pr['user'], pr.get('body', ''))
-        except (ValueError, KeyError, UnicodeError) as exc:
-            api.check(pr['head']['sha'], False, str(exc))
-            print(f'Rejected PR #{pr["number"]}: {exc}')
+            if pr.get('changed_files', 0) > 1000:
+                raise ValueError('Oversized PR: maximum 1000 changed paths')
+            head = api.snapshot(pr['head']['sha'])
+            comparison = api.request('/compare/' + base_sha + '...' + pr['head']['sha'])
+            ancestor = api.snapshot(comparison['merge_base_commit']['sha'])
+            changed = {path for path in set(ancestor.entries) | set(head.entries) if ancestor.entries.get(path) != head.entries.get(path)}
+            core_change = any(not path.startswith('ideas/') or path == HUMAN for path in changed)
+            if maintainer and core_change:
+                # Core maintenance still needs a human merge; this does not certify tests.
+                api.check(pr['head']['sha'], True, 'Trusted maintainer platform change. Manual maintainer review/merge required; no candidate code was executed by the publisher.')
+                continue
+            delta = authorize(current, ancestor, head, reg, pr['user'], pr.get('body', ''))
+            entries = dict(current.entries)
+            for path, entry in delta.items():
+                if entry is None:
+                    entries.pop(path, None)
+                else:
+                    entries[path] = entry
+            head_shas = {entry.sha for entry in head.entries.values()}
+            def reader(sha):
+                if sha in head.cache:
+                    return head.cache[sha]
+                if sha in current.cache:
+                    return current.cache[sha]
+                return head.reader(sha) if sha in head_shas else current.reader(sha)
+            candidate = Snapshot(entries, reader)
+            # Exercise the exact indexing path BEFORE merging. In particular, a
+            # total-size/encoding/catalog error cannot enter main and stall everybody.
+            render_catalog(candidate, reg, datetime.now(TZ).isoformat(timespec='seconds'), api.repo)
+        except ApiError as exc:
+            if exc.status not in (404, 409, 422):
+                raise  # Auth/rate-limit/service failures remain visible/retryable.
+            api.check(pr['head']['sha'], False, f'Candidate could not be resolved: {exc}')
+            print(f'PR #{pr["number"]} unavailable; continuing other submissions')
             continue
-        api.check(pr['head']['sha'], True, f'Validated all changed paths against trusted main {base_sha}; authenticated PR author {pr["user"]["login"]}; Markdown, CC0 consent and file checks passed. Submitted code was not executed.')
+        except (ValueError, KeyError, TypeError, UnicodeError) as exc:
+            message = str(exc).replace('\n', ' ')[:1000]
+            api.check(pr['head']['sha'], False, message)
+            print(f'Rejected PR #{pr["number"]}: {message}')
+            continue
+        api.check(pr['head']['sha'], True, f'Validated all changed paths against trusted main {base_sha}; authenticated author {pr["user"]["login"]}; Markdown, CC0 consent, file limits and complete catalog preflight passed. Submitted code was not executed.')
         api.merge(pr, base_sha)
 
 
@@ -181,7 +218,7 @@ def plan(api: API, base: Snapshot, issues: list[dict], pending: Snapshot | None,
     # Preserve a pending index timestamp only when its recomputed content is identical.
     # No ownership or source data are trusted from the pending search index.
     if pending is not None and INDEX in pending.entries:
-        working = working.changed({INDEX: pending.read(INDEX)})
+        working = working.changed({INDEX: pending.read(INDEX, MAX_INDEX)})
     updates.update(render_catalog(working, registry, now, api.repo))
     return updates_diff(base, updates), source_hashes
 
@@ -268,7 +305,8 @@ def publish(api: API):
         return
     for number, body_hash in source_hashes.items():
         live = api.request(f'/issues/{number}')
-        if live['state'] != 'open' or hashlib.sha256((live.get('body') or '').encode()).hexdigest() != body_hash:
+        if (live['state'] != 'open' or not re.match(r'^\[NEW IDEA\]', live.get('title', ''), re.I)
+                or hashlib.sha256((live.get('body') or '').encode()).hexdigest() != body_hash):
             print(f'Issue #{number} changed; publication needs regeneration')
             return
     api.check(head_sha, True, f'Generated tree read back and matched exactly against deterministic publication plan from main {base_sha}. Registry uniqueness, Markdown indexing, source consent and safe paths verified. No PR code executed.')
