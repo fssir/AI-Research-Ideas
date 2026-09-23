@@ -19,6 +19,7 @@ TZ = timezone(timedelta(hours=3))
 CONSENT = 'I dedicate my original contribution under CC0-1.0 and have the right to submit it.'
 MAX_MD = 2 * 1024 * 1024
 MAX_TEXT = 32 * 1024 * 1024
+MAX_INDEX = 64 * 1024 * 1024
 FOLDER = re.compile(r'^ideas/([0-9]{6,})_([0-9]{8})_([0-9]{6})_GMTp3$')
 TAXONOMY = {
     'Artificial Intelligence / Machine Learning': ['machine learning', 'deep learning', 'neural network', 'transformer', 'large language model', 'llm', 'reinforcement learning', 'causal sequence model', 'tcn', '机器学习', '深度学习', '神经网络', '大语言模型', '强化学习'],
@@ -73,6 +74,8 @@ class Snapshot:
             if len(data) > limit or blob_sha(data) != entry.sha:
                 raise ValueError(f'Blob size/hash mismatch: {path}')
             self.cache[entry.sha] = data
+        if len(self.cache[entry.sha]) > limit:
+            raise ValueError(f'Cached file exceeds read limit: {path}')
         return self.cache[entry.sha]
 
     def changed(self, updates: dict[str, bytes | None]) -> Snapshot:
@@ -96,6 +99,8 @@ class Snapshot:
 
 
 def parse_time(value: str) -> datetime:
+    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+03:00', value):
+        raise ValueError('Creation time must include seconds and fixed +03:00')
     d = datetime.fromisoformat(value)
     if d.utcoffset() != timedelta(hours=3) or d.microsecond or not value.endswith('+03:00'):
         raise ValueError('Creation time must have seconds and fixed +03:00 offset')
@@ -131,10 +136,9 @@ def validate_registry(reg: dict) -> None:
 
 
 def plain(text: str) -> str:
-    text = re.sub(r'<!--.*?-->', ' ', text, flags=re.S)
-    text = re.sub(r'(?ms)^\s*(```|~~~).*?^\s*\1\s*$', ' ', text)
-    text = re.sub(r'!?\[([^\]]*)\]\([^)]*\)', r'\1', text)
-    text = re.sub(r'<[^>]*>', ' ', text)
+    text = visible_markdown(text)
+    text = re.sub(r'!?\[([^\[\]\n]*)\]\([^()\n]*\)', r'\1', text)
+    text = re.sub(r'<[^<>\n]*>', ' ', text)
     lines = []
     for line in text.splitlines():
         if re.match(r'^\s*\*\*(ID|Author|Created|Source issue):\*\*', line):
@@ -163,10 +167,10 @@ def fields_keywords(text: str, title: str) -> tuple[list[str], list[str]]:
             scores.append((score, field))
     scores.sort(key=lambda x: (-x[0], x[1]))
     fields = [f for s, f in scores if s >= max(2, scores[0][0] * .35)][:3] if scores else ['Interdisciplinary / Other']
-    for term in re.findall(r'[a-zA-Z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*', text):
-        term = term.casefold()
+    counts = Counter(term.casefold() for term in re.findall(r'[a-zA-Z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*', text))
+    for term, count in counts.items():
         if len(term) > 2 and term not in STOP:
-            words[term] += 1 + (2 if terms(title, term) else 0)
+            words[term] += count * (1 + (2 if terms(title, term) else 0))
     keywords = [t for t, _ in sorted(words.items(), key=lambda p: (-p[1], p[0])) if t not in STOP][:8]
     return fields, keywords
 
@@ -193,7 +197,7 @@ def render_catalog(snap: Snapshot, registry: dict, now: str, repo: str) -> dict[
     # Deleted IDs must never silently become active again.
     if unknown:
         raise ValueError('Unregistered/restored Idea folders: ' + ', '.join(sorted(unknown)))
-    old = json.loads(snap.read(INDEX)) if INDEX in snap.entries else {}
+    old = json.loads(snap.read(INDEX, MAX_INDEX)) if INDEX in snap.entries else {}
     rows = []
     for ident, item in reg['ideas'].items():
         if item['status'] == 'deleted':
@@ -214,8 +218,9 @@ def render_catalog(snap: Snapshot, registry: dict, now: str, repo: str) -> dict[
             if ent.size > MAX_MD:
                 raise ValueError('Markdown file exceeds 2 MiB; split it: ' + p)
             # Reuse text only from a hash-verified Git blob, never from an untrusted index override.
-            raw = snap.read(p, MAX_MD).decode('utf-8-sig')
-            total += len(raw.encode())
+            raw_bytes = snap.read(p, MAX_MD)
+            raw = raw_bytes.decode('utf-8-sig')
+            total += len(raw_bytes)
             if total > MAX_TEXT:
                 raise ValueError('Idea Markdown exceeds 32 MiB; indexing aborted, not truncated')
             documents.append({'path': p[len(item['path']) + 1:], 'sha': ent.sha, 'text': raw})
@@ -241,7 +246,7 @@ def render_catalog(snap: Snapshot, registry: dict, now: str, repo: str) -> dict[
     for row in rows:
         directory = quote(row['path'][6:], safe='') + '/'
         groups = []
-        for label, starts in [('Code', ('code/',)), ('Paper', ('paper/',)), ('Data / results', ('data/', 'results/')), ('Figures', ('figures/',))]:
+        for label, starts in [('Code', ('code/',)), ('Paper', ('paper/',)), ('Data', ('data/',)), ('Results', ('results/',)), ('Figures', ('figures/',))]:
             candidates = [f for f in row['files'] if f.startswith(starts)]
             if candidates:
                 target = candidates[0].split('/')[0] + '/'
@@ -253,16 +258,45 @@ def render_catalog(snap: Snapshot, registry: dict, now: str, repo: str) -> dict[
         lines.append(f'| {title} | {detail} | {summary} |')
     if not rows:
         lines.append('| No Ideas published yet | — | Submit the first Idea using the link above. |')
-    return {REGISTRY: dump(reg), INDEX: dump(data), HUMAN: ('\n'.join(lines) + '\n').encode()}
+    index_bytes = dump(data)
+    if len(index_bytes) > MAX_INDEX:
+        raise ValueError('Full-text catalog exceeds 64 MiB; shard it before accepting more content')
+    return {REGISTRY: dump(reg), INDEX: index_bytes, HUMAN: ('\n'.join(lines) + '\n').encode()}
+
+
+def visible_markdown(text: str) -> str:
+    """Mask code and comments without changing offsets used to parse Issue forms."""
+    def mask(value):
+        return re.sub(r'[^\n]', ' ', value)
+    text = re.sub(r'<!--.*?(?:-->|\Z)', lambda m: mask(m.group()), text or '', flags=re.S)
+    output, fence = [], None
+    for line in text.splitlines(keepends=True):
+        marker = re.match(r'^[ ]{0,3}(`{3,}|~{3,})', line)
+        if fence is not None:
+            output.append(mask(line))
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= fence[1] and not line[marker.end():].strip():
+                fence = None
+        elif marker:
+            fence = (marker.group(1)[0], len(marker.group(1)))
+            output.append(mask(line))
+        elif line.startswith(('    ', '\t')):
+            output.append(mask(line))
+        else:
+            output.append(line)
+    return ''.join(output)
 
 
 def consented(body: str) -> bool:
-    return bool(re.search(r'^\s*-\s*\[[xX]\]\s*' + re.escape(CONSENT) + r'\s*$', body or '', re.M))
+    return bool(re.search(r'^[ ]{0,3}-[ ]*\[[xX]\][ ]*' + re.escape(CONSENT) + r'[ ]*$', visible_markdown(body), re.M))
 
 
 def sections(body: str) -> dict[str, str]:
+    body = body or ''
     labels = 'Idea title|Idea description|Optional prompt for AI|Declaration'
-    found = list(re.finditer(r'^### (' + labels + r')\s*$', body or '', re.M))
+    found = list(re.finditer(r'^### (' + labels + r')[ \t]*$', visible_markdown(body), re.M))
+    names = [m.group(1) for m in found]
+    if len(set(names)) != len(names):
+        raise ValueError('Duplicate submission form headings; keep each form section once')
     return {m.group(1): body[m.end(): found[i + 1].start() if i + 1 < len(found) else len(body)].strip() for i, m in enumerate(found)}
 
 
@@ -271,12 +305,14 @@ def allocate(registry: dict, issue: dict, now: str, repo: str) -> tuple[dict, di
     validate_registry(reg)
     if any(x.get('source_issue') == issue['number'] for x in reg['ideas'].values()):
         return reg, {}  # Idempotent, including deleted IDs.
-    if not re.match(r'^\[NEW IDEA\]', issue.get('title', ''), re.I) or not consented(issue.get('body', '')):
-        raise ValueError('New Ideas require the submission form and explicit CC0 consent')
-    values = sections(issue['body'])
+    values = sections(issue.get('body') or '')
+    if not re.match(r'^\[NEW IDEA\]', issue.get('title', ''), re.I) or not consented(values.get('Declaration', '')):
+        raise ValueError('New Ideas require the submission form and explicit CC0 consent in Declaration')
     title, description = values.get('Idea title', ''), values.get('Idea description', '')
     if not title or not description or description == '_No response_' or len(title) > 200 or len(description) > 60000:
         raise ValueError('A title (1–200 characters) and description (1–60000 characters) are required')
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in title):
+        raise ValueError('Idea title must be a single line without control characters')
     when = parse_time(now)
     user = issue['user']
     if type(user.get('id')) is not int or not re.fullmatch(r'[A-Za-z0-9-]+(?:\[bot\])?', user.get('login', '')):
@@ -334,10 +370,14 @@ def authorize(current: Snapshot, ancestor: Snapshot, head: Snapshot, registry: d
         md = [p for p in remaining if p.lower().endswith('.md')]
         if not md:
             raise ValueError('An active Idea needs at least one .md file')
-        has_text = False
+        has_text, total = False, 0
         for p in md:
             source = head if p in delta and delta[p] is not None else current
-            raw = source.read(p, MAX_MD).decode('utf-8-sig')
+            raw_bytes = source.read(p, MAX_MD)
+            total += len(raw_bytes)
+            if total > MAX_TEXT:
+                raise ValueError('Idea Markdown exceeds 32 MiB; split/reduce before merging')
+            raw = raw_bytes.decode('utf-8-sig')
             has_text |= bool(raw.strip())
         if not has_text:
             raise ValueError('Markdown must contain text')

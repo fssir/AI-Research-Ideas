@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-      - name: Run isolated platform regression tests
-        run: python3 .github/ori/tests/test_platform.py
+      - name: Run all platform regression tests
+        run: python3 -m unittest discover -s .github/ori/tests -p 'test_*.py' -v
 # This read-only job is NOT the authorization gate. A trusted default-branch
 # workflow independently checks PR trees via the API and reports ori-validation.

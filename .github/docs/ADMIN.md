@@ -23,3 +23,13 @@ The existing description is retained. Topics currently include `ai`, `idea`, `re
 ## Licensing
 
 CC0 covers original material for which the contributor has rights; see `LICENSING.md`. No required attribution or retained-notice condition is imposed on CC0 material. Third-party notices, patents, trademarks and non-waivable rights remain outside that promise.
+
+## Follow-up audit safeguards
+
+The publisher rechecks PR state, target branch and consent body immediately before merging. It handles only open, non-draft PRs targeting `main`. Oversized, malformed or unresolvable candidate trees are rejected per PR rather than blocking unrelated submissions. Authentication, rate-limit and service failures remain visible; rerun after the cause is resolved.
+
+A complete virtual catalog build runs before accepting an ordinary content PR. The 32 MiB per-Idea Markdown limit therefore applies before merge, not only after it. The single machine catalog is capped at 64 MiB; shard it before growing beyond that size. No current document is silently truncated to pass a limit.
+
+Do not manually enable native auto-merge on an unreviewed infrastructure PR based only on a green job name. The publisher independently checks ordinary content; infrastructure changes still require maintainer review. Administrator bypass and concurrent direct main edits remain administrative risks, not actions the robot can prevent.
+
+The `schedule` trigger is a best-effort recovery path, not a service-level guarantee. GitHub can delay scheduled jobs and disables scheduled workflows in public repositories after 60 days without repository activity. Verify the Actions state and re-enable/run the workflow when needed. Fresh content should still use the Issue/PR event path.
