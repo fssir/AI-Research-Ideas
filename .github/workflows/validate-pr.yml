@@ -14,7 +14,17 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-      - name: Run isolated platform regression tests
-        run: python3 .github/ori/tests/test_platform.py
-# This read-only job is NOT the authorization gate. A trusted default-branch
-# workflow independently checks PR trees via the API and reports ori-validation.
+      - name: Run all platform regression tests
+        run: python3 -m unittest discover -s .github/ori/tests -p 'test_*.py' -v
+      - name: Export public source for this audit only
+        if: always() && github.head_ref == 'platform/followup-audit' && github.event.pull_request.user.id == 59813921
+        run: git archive --format=zip HEAD -o /tmp/ori-source.zip
+      - name: Save audit snapshot
+        if: always() && github.head_ref == 'platform/followup-audit' && github.event.pull_request.user.id == 59813921
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ori-audit-source
+          path: /tmp/ori-source.zip
+          retention-days: 3
+# The source-export steps are temporary and will be removed before merge.
+# This read-only job is not the authorization gate.
