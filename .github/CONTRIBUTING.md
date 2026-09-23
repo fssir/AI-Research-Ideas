@@ -26,8 +26,10 @@ Do not include secrets, private/confidential material or third-party works you c
 
 ## Operational limits
 
-Automation accepts at most 1000 changed paths / 100 MiB per PR and 50 MiB per regular file. Symlinks, submodules and unsafe paths are rejected. Each Markdown file must be at most 2 MiB and an Idea's Markdown at most 32 MiB; oversize content produces an explicit error rather than a silently incomplete index. Split long documents or link large datasets to a suitable data repository. These are hosting/safety limits, not restrictions on downstream CC0 reuse.
+Automation accepts at most 1000 changed paths / 100 MiB per PR and 50 MiB per regular file. Symlinks, submodules and unsafe paths are rejected. Each Markdown file must be at most 2 MiB and an Idea's Markdown at most 32 MiB; the current full-text catalog is capped at 64 MiB and must be sharded before exceeding it. Oversize content produces an explicit error rather than a silently incomplete index. Split long documents or link large datasets to a suitable data repository. These are hosting/safety limits, not restrictions on downstream CC0 reuse.
 
 ## When a submission is pending
 
 The normal path uses one machine-owned publication branch/PR, not a new index PR on every change. Check the source Issue comment and PR's `ori-validation` check. After editing consent or content, the next event/periodic scan retries. GitHub scheduling is best effort and publication is not guaranteed to be instantaneous. Maintainers can run **Actions → ORI platform → Run workflow**.
+
+For licensing consent, tick the actual checkbox outside code examples or HTML comments. In a new-Idea form it must be in **Declaration**. Keep each form heading once, and use a single-line title. These parsing rules prevent examples or copied prompts from accidentally being treated as legal consent; they do not add a metadata form.
